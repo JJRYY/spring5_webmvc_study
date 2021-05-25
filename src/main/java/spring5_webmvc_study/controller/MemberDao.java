@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -75,5 +76,10 @@ public class MemberDao {
 	// 결과가 1행인 경우
 	public int count() {
 		return jdbcTemplate.queryForObject("select count(*) from member", Integer.class);
+	}
+	
+	public List<Member> selectByRegdate(LocalDateTime from, LocalDateTime to){
+		String sql = "select * from member where regdate between ? and ? order by regdate desc";
+		return jdbcTemplate.query(sql, new MemberRowMapper(), from, to);
 	}
 }
