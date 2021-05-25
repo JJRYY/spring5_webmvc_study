@@ -2,6 +2,7 @@ package spring5_webmvc_study.controller;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -26,9 +28,24 @@ public class MemberDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+	private RowMapper<Member> memberRowMapper = new RowMapper<Member>() {
+
+		@Override
+		public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Member member = new Member(
+						rs.getString("email"),
+						rs.getString("password"),
+						rs.getString("name"),
+						rs.getTimestamp("regdate").toLocalDateTime()
+					);
+			member.setId(rs.getLong("id"));
+			return member;
+		}
+	};
+	
 	// 결과가 1개 이상인 경우
 	public Member selectByEmail(String email) {
-		List<Member> results = jdbcTemplate.query("select * from member where email = ?", new MemberRowMapper(), email);
+		List<Member> results = jdbcTemplate.query("select * from member where email = ?", memberRowMapper, email);
 		return results.isEmpty() ? null : results.get(0);
 	}
 
@@ -70,7 +87,7 @@ public class MemberDao {
 	}
 
 	public List<Member> selectAll() {
-		return jdbcTemplate.query("select * from member", new MemberRowMapper());
+		return jdbcTemplate.query("select * from member", memberRowMapper);
 	}
 
 	// 결과가 1행인 경우
@@ -80,6 +97,6 @@ public class MemberDao {
 	
 	public List<Member> selectByRegdate(LocalDateTime from, LocalDateTime to){
 		String sql = "select * from member where regdate between ? and ? order by regdate desc";
-		return jdbcTemplate.query(sql, new MemberRowMapper(), from, to);
+		return jdbcTemplate.query(sql, memberRowMapper, from, to);
 	}
 }
