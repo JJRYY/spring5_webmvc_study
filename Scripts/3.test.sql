@@ -5,9 +5,9 @@ desc member;
 select * from member;
 select count(*) from member;
 
-delete from member where id > 4;
+delete from member where id > 2;
 
-alter table member auto_increment=5;
+alter table member auto_increment=3;
 
 select * 
 	from member 
