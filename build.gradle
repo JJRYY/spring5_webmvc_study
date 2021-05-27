@@ -45,6 +45,14 @@ dependencies {
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 	testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.1'
+	
+	//Bean Validator
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '7.0.1.Final'
+	
+	//Jackson : JSON library
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.3'
+	
 
     testImplementation 'junit:junit:4.13'
 }
